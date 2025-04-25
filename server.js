@@ -19,10 +19,13 @@ wss.on("connection", function connection(ws) {
   ws.on("message", function incoming(msg) {
     console.log(`📥 hi from phone ${id}:`, msg);
 
+    const messageContent = msg.toString();
+    console.log(`🎵 Received selected note: ${messageContent}`);
+
     // Broadcast to all clients
     wss.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(`hi from phone ${id}`);
+        client.send(`${messageContent}`);
       }
     });
   });
