@@ -10,12 +10,93 @@ let counter = 1;
 
 // In-memory project info (for demo/testing)
 let projectInfo = {
+    projectName: "My First Project",
     bpm: 120,
     players: {
-        A: { instrument: "drums", mode: "motion", name: "Alice" },
-        B: { instrument: "synth", mode: "orientation-2D", name: "Bob" },
-        C: { instrument: "guitar", mode: "orientation-3D", name: "Charlie" },
-        D: { instrument: "piano", mode: "tapping", name: "Dana" }
+        A: {
+            name: "Alice",
+            instrument: "Instrument A",
+            mode: "tapping",
+            tappingNote: 11,
+            loopStartNote: 11,
+            loopStopNote: 12,
+            motionCC: 11,
+            orientationAxis: "alpha",
+            orientationAxes2D: "alpha-beta",
+            orientationCC1: 11,
+            orientationCC2: 12,
+            orientationCC3: 13
+        },
+        B: {
+            name: "Bob",
+            instrument: "Instrument B",
+            mode: "looping",
+            tappingNote: 21,
+            loopStartNote: 21,
+            loopStopNote: 22,
+            motionCC: 21,
+            orientationAxis: "alpha",
+            orientationAxes2D: "alpha-beta",
+            orientationCC1: 21,
+            orientationCC2: 22,
+            orientationCC3: 23
+        },
+        C: {
+            name: "Charlie",
+            instrument: "Instrument C",
+            mode: "motion",
+            tappingNote: 31,
+            loopStartNote: 31,
+            loopStopNote: 32,
+            motionCC: 31,
+            orientationAxis: "alpha",
+            orientationAxes2D: "alpha-beta",
+            orientationCC1: 31,
+            orientationCC2: 32,
+            orientationCC3: 33
+        },
+        D: {
+            name: "Dana",
+            instrument: "Instrument D",
+            mode: "orientation-1D",
+            tappingNote: 41,
+            loopStartNote: 41,
+            loopStopNote: 42,
+            motionCC: 41,
+            orientationAxis: "alpha",
+            orientationAxes2D: "alpha-beta",
+            orientationCC1: 41,
+            orientationCC2: 42,
+            orientationCC3: 43
+        },
+        E: {
+            name: "Eve",
+            instrument: "Instrument E",
+            mode: "orientation-2D",
+            tappingNote: 51,
+            loopStartNote: 51,
+            loopStopNote: 52,
+            motionCC: 51,
+            orientationAxis: "alpha",
+            orientationAxes2D: "alpha-beta",
+            orientationCC1: 51,
+            orientationCC2: 52,
+            orientationCC3: 53
+        },
+        F: {
+            name: "Frank",
+            instrument: "Instrument F",
+            mode: "orientation-3D",
+            tappingNote: 61,
+            loopStartNote: 61,
+            loopStopNote: 62,
+            motionCC: 61,
+            orientationAxis: "alpha",
+            orientationAxes2D: "alpha-beta",
+            orientationCC1: 61,
+            orientationCC2: 62,
+            orientationCC3: 63
+        }
     }
 };
 
@@ -53,10 +134,12 @@ wss.on("connection", function connection(ws) {
         }
 
         if (data.action === "updateProject" && data.project) {
-            // For now, just overwrite with provided data
+            // Overwrite with provided data
             projectInfo = data.project;
             ws.send(JSON.stringify({ action: "projectUpdated", success: true }));
-            console.log(`📝 Project updated`);
+            // Notify all clients (except sender) that a new version is available
+            broadcast(JSON.stringify({ action: "projectNeedsRefresh" }), ws);
+            console.log(`📝 Project updated and refresh notification sent`);
             return;
         }
 
