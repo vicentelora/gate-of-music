@@ -117,6 +117,13 @@ wss.on("connection", function connection(ws) {
             return;
         }
 
+        if (data.action === "ping") {
+            // Handle ping action
+            ws.send(JSON.stringify({ action: "pong" }));
+            console.log(`🔄 Ping received, sent pong`);
+            return;
+        }
+
         // Handle special actions
         if (data.action === "join" && data.playerID) {
             // Assign mode from projectInfo or default to tapping
